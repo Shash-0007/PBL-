@@ -1,11 +1,8 @@
+SHASHWATH SHETTY-25191148
+
 INTER-PROCESS COMMUNICATION (IPC)
 
-MEMBER 4 – SOCKETS AND REMOTE PROCEDURE CALL
-
-DESCRIPTION
-
-this section explains two important ipc mechanisms: sockets and remote procedure call (rpc). it describes their basic concepts, how they work, advantages, limitations, and common applications in a general operating-system environment.
-
+SOCKETS AND REMOTE PROCEDURE CALL
 
 1. SOCKETS
 
