@@ -1,0 +1,203 @@
+INTER-PROCESS COMMUNICATION (IPC)
+
+MEMBER 4 – SOCKETS AND REMOTE PROCEDURE CALL
+
+DESCRIPTION
+
+this section explains two important ipc mechanisms: sockets and remote procedure call (rpc). it describes their basic concepts, how they work, advantages, limitations, and common applications in a general operating-system environment.
+
+
+1. SOCKETS
+
+A socket is a communication endpoint that allows two processes to exchange data. sockets provide a mechanism through which processes can communicate either within the same system or between different systems.
+
+sockets are commonly used in client-server communication, where one process acts as a client requesting a service and another process acts as a server providing the service.
+
+
+HOW SOCKETS WORK
+
+the basic communication process is:
+
+        CLIENT                         SERVER
+          |                              |
+          |      create socket           |
+          |                              |
+          |                         create socket
+          |                              |
+          |                         bind address
+          |                              |
+          |                           listen
+          |                              |
+          |-------- connect ----------->|
+          |                              |
+          |-------- send data --------->|
+          |                              |
+          |<------- send response ------|
+          |                              |
+          |--------- close ------------>|
+          |                              |
+
+
+the general steps are:
+
+1. socket creation – both processes create a communication endpoint.
+
+2. addressing – the server associates its socket with an address so that it can be located.
+
+3. connection or communication setup – the client establishes communication with the server when a connection-oriented mechanism is used.
+
+4. data transfer – the processes exchange messages or data through the sockets.
+
+5. termination – the communication is closed when the required exchange is completed.
+
+sockets can support different communication styles, including stream-based and datagram-based communication.
+
+
+ADVANTAGES OF SOCKETS
+
+1. allows processes to communicate efficiently.
+
+2. suitable for both local and network-based communication.
+
+3. supports client-server architectures.
+
+4. can transfer different types and amounts of data.
+
+5. provides a flexible communication mechanism.
+
+
+LIMITATIONS OF SOCKETS
+
+1. communication may have additional overhead.
+
+2. processes must handle communication errors.
+
+3. network-based communication can experience delays.
+
+4. proper synchronization and data handling may be required.
+
+
+APPLICATIONS OF SOCKETS
+
+sockets are commonly used in:
+
+1. client-server applications
+
+2. web-based applications
+
+3. chat and messaging systems
+
+4. multiplayer games
+
+5. file-transfer systems
+
+6. distributed applications
+
+
+2. REMOTE PROCEDURE CALL (RPC)
+
+remote procedure call (rpc) is an ipc mechanism that allows one process to request a procedure or function to be executed by another process. the requesting process can make the request in a way that resembles a normal procedure call, while the underlying rpc mechanism handles the communication between the processes.
+
+rpc is particularly useful when processes need to communicate as part of a distributed application.
+
+
+HOW RPC WORKS
+
+the basic rpc communication process is:
+
+        CLIENT                         SERVER
+          |                              |
+          |  call remote procedure      |
+          |                              |
+          v                              |
+    client-side stub                    |
+          |                              |
+          |-------- request ----------->|
+          |                              |
+          |                         server-side stub
+          |                              |
+          |                         execute procedure
+          |                              |
+          |<--------- result -----------|
+          |                              |
+          v                              |
+       continue                       complete
+       execution                      request
+
+
+the basic steps are:
+
+1. client makes a request – the client process calls a remote procedure.
+
+2. request is prepared – the rpc mechanism prepares the procedure name and required parameters for communication.
+
+3. request is transferred – the request is sent to the server process.
+
+4. server receives the request – the server identifies the requested procedure.
+
+5. procedure is executed – the server performs the requested operation.
+
+6. result is returned – the result is sent back to the client.
+
+7. client continues execution – the client receives the result and continues its operation.
+
+
+RPC STUBS
+
+rpc generally uses two important components.
+
+client stub: acts as an intermediary between the client application and the communication system. it prepares the request and sends it to the server.
+
+server stub: receives the request, identifies the required procedure, and passes the parameters to the appropriate procedure. it then helps return the result to the client.
+
+this hides much of the underlying communication complexity from the application programmer.
+
+
+ADVANTAGES OF RPC
+
+1. provides a simple method for communication between processes.
+
+2. hides many low-level communication details.
+
+3. makes distributed application development easier.
+
+4. allows processes to request services from other processes.
+
+5. provides a procedure-oriented communication model.
+
+
+LIMITATIONS OF RPC
+
+1. communication can be affected by delays.
+
+2. failures can occur while transferring requests or responses.
+
+3. remote calls generally have more overhead than local procedure calls.
+
+4. processes need compatible communication and data formats.
+
+
+APPLICATIONS OF RPC
+
+rpc is commonly used in:
+
+1. distributed systems
+
+2. client-server applications
+
+3. network services
+
+4. distributed databases
+
+5. microservices
+
+6. remote service applications
+
+
+3. CONCLUSION
+
+inter-process communication provides mechanisms that allow independent processes to exchange information and coordinate their activities.
+
+sockets provide an endpoint through which processes can exchange data, while rpc provides a higher-level mechanism where one process can request another process to execute a procedure.
+
+both mechanisms help operating systems and distributed applications enable communication between processes in an organized and efficient manner.
