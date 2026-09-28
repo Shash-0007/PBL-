@@ -1,0 +1,242 @@
+Name : RIYA HENCY DSA
+RegNo: 25191140
+
+INTER-PROCESS COMMUNICATION (IPC): SHARED MEMORY, SEMAPHORES AND SYNCHRONIZATION
+
+Theoretical Assignment | Member 3, IPC Methods (Part 2)
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+INTRODUCTION
+
+When you use a computer, a lot of programs are running at the same time. Your browser, your music player and your download manager are all separate processes, and sometimes they need to share data or take turns using the same resource. Inter-Process Communication (IPC) is what makes that possible.
+
+In this part of the assignment, I cover three connected topics. Shared memory is a quick way for processes to exchange data. Semaphores control who gets to use a resource and when. Synchronization is the bigger idea that keeps everything happening in the right order so nothing breaks.
+
+SHARED MEMORY
+--------------
+
+1.1 Definition
+
+Shared memory is a method where two or more processes are allowed to use the same block of RAM. They don't send messages to each other. They just read from and write to that common space.
+
+Imagine a whiteboard in a classroom. One person writes on it and everyone else reads it right there, without anyone passing notes.
+
+1.2 Why it is used
+
+Other methods, like pipes and message queues, copy data from one process into the kernel and then again into the other process. Shared memory skips that copying, so it is faster and uses less CPU. It is also a good choice for large data like images, video frames or big tables.
+
+1.3 How it works
+
+The operating system sets up a shared memory segment.
+Each process attaches that segment to its own address space.
+One process writes data into it.
+The other process reads the data straight from the same place.
+When they finish, the processes detach and the segment is removed.
+
+On Linux and UNIX, this is done with system calls such as shmget(), shmat(), shmdt() and shmctl(), or with the POSIX versions shm_open() and mmap().
+
+1.4 Advantages
+
+It is the fastest IPC method.
+It works well for large amounts of data.
+The kernel is involved only during setup, so the overhead is low.
+It suits programs where speed is important.
+
+1.5 Disadvantages
+
+The OS does not stop two processes from writing at the same time, so synchronization is necessary.
+Data can get corrupted if access is not controlled.
+It is harder to program than message passing.
+Managing the memory is more complicated.
+It only works between processes on the same machine.
+
+1.6 Applications
+
+Shared memory is used in database systems, multimedia software, scientific computing, real-time systems and operating systems.
+
+1.7 Example
+
+Suppose Process A calculates students' marks and saves them in shared memory, and Process B reads them to make report cards. Nothing gets copied, so it is quick. But B must wait until A has finished writing. Otherwise the report cards could show marks that are only half updated. This is the kind of problem semaphores are meant to solve.
+
+SEMAPHORES
+-----------
+
+2.1 Definition
+
+A semaphore is an integer variable used to control access to shared resources. It can only be changed by two atomic operations, which means they cannot be interrupted in the middle. Its value shows how many units of a resource are currently free. The idea was introduced by Edsger Dijkstra.
+
+Think of the tokens at a parking lot with limited spaces. A car takes a token to go in and returns it when it leaves. When the tokens run out, the next cars have to wait outside.
+
+2.2 The two operations
+
+wait(S), also called P or down: If S is greater than 0, reduce S by one and carry on. Otherwise, the process waits.
+
+signal(S), also called V or up: Increase S by one and wake up a waiting process, if there is one.
+
+wait(S):
+    while (S <= 0)
+        ;   // wait
+    S = S - 1
+
+signal(S):
+    S = S + 1
+
+2.3 Types of semaphores
+
+Binary semaphore: It can only be 0 or 1. A value of 1 means the resource is free, and 0 means it is in use. Only one process can enter at a time, so it is often used for mutual exclusion.
+
+Counting semaphore: It can hold any value from zero upwards. It is used when there are several identical resources, such as 3 printers or 10 database connections, and the value tells how many are still free.
+
+2.4 How it works
+
+A process calls wait() to request the resource.
+If the value is above zero, the process gets access and the value drops by one.
+If the value is zero, the process is blocked until the resource is released.
+The process does its work.
+It calls signal(), and the value goes up by one.
+
+2.5 Advantages
+
+It prevents race conditions.
+It controls how a resource is shared.
+It helps keep data consistent.
+It works for one resource as well as several identical ones.
+
+2.6 Disadvantages
+
+It is easy to get wrong. Forgetting a signal() can leave processes stuck forever.
+Calling wait() in the wrong order can cause deadlock.
+Bugs are hard to reproduce and fix.
+Semaphores are low-level, so it is easy to make mistakes.
+
+2.7 Applications
+
+Semaphores are used in printer management, database connection pools, operating systems, multithreading and process synchronization.
+
+2.8 Example
+
+In a computer lab, many students want to print on one printer. A binary semaphore starts at 1. When the first print job begins, it drops to 0 and everyone else has to wait. When that job is done, it goes back to 1 and the next job can start.
+
+2.9 Semaphores with shared memory (producer-consumer)
+
+Shared memory and semaphores are often used together. In this well-known example, a producer puts items into a shared buffer and a consumer takes them out.
+
+Semaphores:  empty = N   (free slots)
+             full  = 0   (filled slots)
+             mutex = 1   (protects the buffer)
+
+Producer:                 Consumer:
+  wait(empty)               wait(full)
+  wait(mutex)               wait(mutex)
+  add item to buffer        remove item from buffer
+  signal(mutex)             signal(mutex)
+  signal(full)              signal(empty)
+
+The producer cannot add to a full buffer, the consumer cannot take from an empty one, and only one of them uses the buffer at a time.
+
+SYNCHRONIZATION
+---------------
+
+3.1 Definition
+
+Synchronization means coordinating processes or threads so that they run in the right order and share resources safely. Semaphores are one of the tools used to do this.
+
+3.2 Why it is needed
+
+When processes share data, the final result can depend on which one runs first. This is called a race condition. Synchronization is needed to stop this from happening, keep shared data consistent, avoid wrong output and make the system more reliable.
+
+3.3 The critical section
+
+A critical section is the part of a program that reads or changes shared data. Only one process should be inside its critical section at a time. A correct solution must satisfy three conditions:
+
+Mutual exclusion: only one process can be in the critical section at a time.
+Progress: if the critical section is empty, one of the waiting processes must be allowed to enter.
+Bounded waiting: no process should have to wait forever.
+
+3.4 How it works
+
+Every process follows this general structure:
+
+do {
+    entry section      // request permission
+    critical section   // use shared data
+    exit section       // release permission
+    remainder section
+} while (true);
+
+3.5 Common synchronization tools
+
+Semaphores: counters that control access, as explained above.
+Mutex locks: a lock that can only be released by the process that holds it.
+Monitors: a high-level structure that handles the locking automatically.
+Condition variables: let a process wait until a certain condition becomes true.
+
+3.6 Advantages
+
+It prevents race conditions.
+It protects shared data.
+It helps programs run correctly.
+It makes multitasking safer.
+
+3.7 Disadvantages
+
+It makes programs more complex.
+Too much locking can slow the system down.
+It can lead to deadlock, where processes wait on each other forever, or starvation, where a process never gets a turn.
+
+3.8 Applications
+
+Synchronization is used in banking systems, online ticket booking, database management, operating systems and e-commerce.
+
+3.9 Example
+
+Two people try to withdraw ₹1,000 from the same account at the same moment, and the balance is ₹5,000. Without synchronization, both read ₹5,000, both subtract ₹1,000, and both write back ₹4,000, so the account shows ₹4,000 instead of ₹3,000. With synchronization, the second withdrawal waits until the first one is finished, and the balance stays correct.
+
+COMPARISON
+
+Purpose:
+
+Shared Memory: exchange data between processes
+Semaphores: control access to resources
+Synchronization: coordinate execution and safe access
+
+Nature:
+
+Shared Memory: an IPC method
+Semaphores: a tool
+Synchronization: a concept or goal
+
+Speed:
+
+Shared Memory: very fast
+Semaphores: fast for simple counter operations
+Synchronization: depends on the mechanism used
+
+Shares data?
+
+Shared Memory: yes
+Semaphores: no
+Synchronization: no
+
+Prevents race conditions?
+
+Shared Memory: no, it needs synchronization
+Semaphores: yes
+Synchronization: yes
+
+Main use:
+
+Shared Memory: data exchange
+Semaphores: resource control
+Synchronization: safe and correct execution
+
+Semaphores are one way to achieve synchronization, and shared memory is the kind of resource that needs it most.
+
+CONCLUSION
+
+Shared memory gives processes a very fast way to exchange data, but it has no protection of its own. Semaphores add that protection by controlling who can use a resource and when. Synchronization is the bigger goal that ties it all together, making sure processes work together safely and give correct results. Used together, these techniques are the backbone of operating systems, databases, banking software and real-time systems.
+
+REFERENCES
+Silberschatz, A., Galvin, P. B., & Gagne, G. Operating System Concepts (10th ed.). Wiley.
+Tanenbaum, A. S., & Bos, H. Modern Operating Systems (4th ed.). Pearson.
+Stallings, W. Operating Systems: Internals and Design Principles. Pearson.
