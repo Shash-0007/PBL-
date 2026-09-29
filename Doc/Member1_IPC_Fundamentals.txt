@@ -1,0 +1,49 @@
+AYSHA SAMEEHA - 25191108
+
+Inter-Process Communication (IPC)
+Fundamentals:
+
+1. Introduction
+
+Inter-Process Communication (IPC) is a mechanism that allows two or more processes to communicate and exchange data with each other.
+
+A process is a program that is currently being executed. When multiple processes need to work together, they may need to exchange information or coordinate their activities. IPC provides different methods for this communication.
+
+For example, in a client-server system, the client process can send a request to the server process. The server processes the request and sends the result back to the client.
+
+
+2. Need for IPC
+
+IPC is required when processes need to:
+
+* Exchange data with each other.
+* Share information and resources.
+* Coordinate their activities.
+* Send requests and receive responses.
+* Synchronize their execution.
+* Build client-server applications.
+
+⸻
+
+3.Characteristics of IPC
+
+1. Communication – Allows processes to exchange information with each other.
+2. Data Sharing – Enables processes to share data and information.
+3. Synchronization – Helps processes coordinate their activities and execution.
+4. Resource Sharing – Allows processes to share system resources efficiently.
+5. Process Coordination – Helps multiple processes work together to complete tasks.
+6. Security – Controls access to data and communication between processes.
+7. Reliability – Ensures that information is communicated correctly between processes.
+
+4. Main IPC Techniques
+
+The commonly used IPC techniques are:
+
+1. Pipes
+2. Message Queues
+3. Shared Memory
+4. Sockets
+
+Conclusion
+
+IPC is an important part of an operating system that allows processes to communicate, share data, synchronize activities, and coordinate with each other. It helps multiple processes work together efficiently and improves the overall performance and reliability of the system.
